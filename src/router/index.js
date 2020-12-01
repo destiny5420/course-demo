@@ -1,6 +1,9 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Home from '../views/Home.vue';
+import Home from '@/views/vHome/index.vue';
+import Emmit from '@/views/vEmmit/index.vue';
+import Bus from '@/views/vBus/index.vue';
+import FBLogin from '@/views/vFBLogin/index.vue';
 
 Vue.use(VueRouter);
 
@@ -11,12 +14,19 @@ const routes = [
     component: Home,
   },
   {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
+    path: '/emmit',
+    name: 'Emmit',
+    component: Emmit,
+  },
+  {
+    path: '/bus',
+    name: 'Bus',
+    component: Bus,
+  },
+  {
+    path: '/fb-login',
+    name: 'FBLogin',
+    component: FBLogin,
   },
 ];
 

@@ -1,0 +1,9 @@
+<div id="app">
+  <div id="nav">
+    <div v-for="(item, index) in menuDatas" :key="index">
+      <router-link :to="item.link">{{ item.name }}</router-link>
+    </div>
+  </div>
+  <router-view />
+  <cAlert></cAlert>
+</div>
