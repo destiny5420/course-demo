@@ -42,7 +42,11 @@ export default {
   // life cycle
   beforeCreate: function() {},
   created: function() {},
-  beforeMounted: function() {},
+  beforeMounted: function() {
+    console.log('-- Start beforeMounted --');
+
+    console.log('-- End beforeMounted --');
+  },
   mounted: function() {
     const vm = this;
     console.warn('FB Login page / mounted!');

@@ -4,6 +4,7 @@ import Home from '@/views/vHome/index.vue';
 import Emmit from '@/views/vEmmit/index.vue';
 import Bus from '@/views/vBus/index.vue';
 import FBLogin from '@/views/vFBLogin/index.vue';
+import ThreeWave from '@/views/vThreeWave/index.vue';
 
 Vue.use(VueRouter);
 
@@ -27,6 +28,11 @@ const routes = [
     path: '/fb-login',
     name: 'FBLogin',
     component: FBLogin,
+  },
+  {
+    path: '/three-wave',
+    name: 'ThreeWave',
+    component: ThreeWave,
   },
 ];
 
