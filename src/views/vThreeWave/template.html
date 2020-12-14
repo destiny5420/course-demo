@@ -1,3 +1,25 @@
 <div>
   <div id="canvas-render"></div>
+  <script src="./vertexshader.shader" type="x-shader/x-vertex" id="vertexshader">
+    attribute float scale;
+    attribute vec4 color;
+
+    varying vec4 vColor;
+
+    void main() {
+      vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+
+      vColor = color;
+      gl_PointSize = scale * ( 200.0 / - mvPosition.z );
+      gl_Position = projectionMatrix * mvPosition;
+    }
+  </script>
+  <script type="x-shader/x-fragment" id="fragmentshader">
+    varying vec4 vColor;
+
+    void main() {
+      if ( length( gl_PointCoord - vec2( 0.5, 0.5 ) ) > 0.5 ) discard;
+      gl_FragColor = vColor;
+    }
+  </script>
 </div>

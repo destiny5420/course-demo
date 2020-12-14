@@ -10,6 +10,7 @@ export default {
   data: function() {
     return {
       three: {
+        container: null,
         scene: null,
         camera: null,
         renderer: null,
@@ -20,9 +21,16 @@ export default {
         cube: null,
       },
       configure: {
+        startupPos: {
+          x: 25,
+          y: 25,
+          z: 25,
+        },
         fov: 75.0,
         amountX: 50,
         amountY: 50,
+        positions: [],
+        scales: [],
         SEPARATION: 10,
       },
       particles: [],
@@ -34,13 +42,15 @@ export default {
       console.log('-- Initialize Function --');
       const vm = this;
 
+      vm.three.container = document.getElementById('canvas-render');
       vm.three.stats = new Stats();
-      document.getElementById('canvas-render').appendChild(vm.three.stats.dom);
+      vm.three.container.appendChild(vm.three.stats.dom);
 
       vm.createScene();
       vm.createObj();
       vm.createLight();
       vm.createHelper();
+      vm.animate();
       vm.renderScene();
     },
     createScene: function() {
@@ -52,43 +62,62 @@ export default {
 
       // -- create camera
       vm.three.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-      vm.three.camera.position.set(155, 155, 155);
+      vm.three.camera.position.set(vm.configure.startupPos.x, vm.configure.startupPos.y, vm.configure.startupPos.z);
 
       vm.three.renderer = window.WebGLRenderingContext ? new THREE.WebGLRenderer({ antialias: true }) : new THREE.CanvasRenderer();
       vm.three.renderer.setSize(window.innerWidth, window.innerHeight);
-      vm.three.renderer.setClearColor(0x07074e, 1);
+      vm.three.renderer.setClearColor(0x07074e, 1); // setting background color;
 
-      const renderDomElement = document.getElementById('canvas-render');
-      renderDomElement.appendChild(vm.three.renderer.domElement);
+      vm.three.container.appendChild(vm.three.renderer.domElement);
 
       // -- OrbitControls
       vm.three.orbitControls = new OrbitControls(vm.three.camera, vm.three.renderer.domElement);
 
-      const particleGeometry = new THREE.Geometry();
-      const particleMaterial = new THREE.SpriteMaterial({
-        color: 0xffffff,
-        // program: function(context) {
-        //   context.beginPath();
-        //   context.arc(0, 0, 0.4, 0, Math.PI * 2, true);
-        //   context.fill();
-        // },
-      });
+      const numParticles = vm.configure.amountX * vm.configure.amountY;
+      vm.configure.positions = new Float32Array(numParticles * 3);
+      vm.configure.scales = new Float32Array(numParticles);
+
+      const colors = new Float32Array(numParticles * 4);
 
       let i = 0;
+      let j = 0;
+      let k = 0;
+
       for (let ix = 0; ix < vm.configure.amountX; ix += 1) {
         for (let iy = 0; iy < vm.configure.amountY; iy += 1) {
-          const particle = new THREE.Sprite(particleMaterial);
-          particle.position.x = ix * vm.configure.SEPARATION - (vm.configure.amountX * vm.configure.SEPARATION) / 2;
-          particle.position.z = iy * vm.configure.SEPARATION - (vm.configure.amountY * vm.configure.SEPARATION) / 2;
-          vm.particles[i] = particle;
-          i += 1;
-          vm.three.scene.add(particle);
+          vm.configure.positions[i] = ix * vm.configure.SEPARATION - (vm.configure.amountX * vm.configure.SEPARATION) / 2; // x
+          vm.configure.positions[i + 1] = 0; // y
+          vm.configure.positions[i + 2] = iy * vm.configure.SEPARATION - (vm.configure.amountY * vm.configure.SEPARATION) / 2; // z
+          vm.configure.scales[j] = 0.5;
 
-          if (i > 0) {
-            particleGeometry.vertices.push(particle.position);
-          }
+          colors[k] = Math.random();
+          colors[k + 1] = Math.random();
+          colors[k + 2] = Math.random();
+          colors[k + 3] = 1;
+
+          i += 3;
+          j += 1;
+          k += 4;
         }
       }
+
+      // console.warn(colors);
+
+      const particleGeometry = new THREE.BufferGeometry();
+      particleGeometry.setAttribute('position', new THREE.BufferAttribute(vm.configure.positions, 3));
+      particleGeometry.setAttribute('scale', new THREE.BufferAttribute(vm.configure.scales, 1));
+      particleGeometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 4));
+
+      const particleMaterial = new THREE.ShaderMaterial({
+        uniforms: {
+          // color: { value: new THREE.Color(0xffffff) },
+        },
+        vertexShader: document.getElementById('vertexshader').textContent,
+        fragmentShader: document.getElementById('fragmentshader').textContent,
+      });
+
+      vm.particles = new THREE.Points(particleGeometry, particleMaterial);
+      vm.three.scene.add(vm.particles);
     },
     createObj: function() {
       console.log('-- createObj Function --');
@@ -114,34 +143,38 @@ export default {
       const gridHelper = new THREE.GridHelper(size, divisions);
       vm.three.scene.add(gridHelper);
     },
+    animate: function() {
+      const vm = this;
+      requestAnimationFrame(vm.animate); // 產生動畫
+      vm.renderScene();
+      vm.three.stats.update();
+    },
     renderScene: function() {
       const vm = this;
-      requestAnimationFrame(vm.renderScene); // 產生動畫
 
-      // vm.objs.cube.rotation.x += 0.01;
-      // vm.objs.cube.rotation.y += 0.01;
-      // vm.stats.update();
-      // vm.objectUpdate();
-      // vm.lightUpdate();
-      // vm.animationUpdate();
       vm.updateParticle();
 
       vm.three.renderer.render(vm.three.scene, vm.three.camera);
-      vm.three.stats.update();
     },
     updateParticle: function() {
       const vm = this;
       let i = 0;
+      let j = 0;
+
+      const positions = vm.particles.geometry.attributes.position.array;
+      const scales = vm.particles.geometry.attributes.scale.array;
+
       for (let ix = 0; ix < vm.configure.amountX; ix += 1) {
         for (let iy = 0; iy < vm.configure.amountY; iy += 1) {
-          const particle = vm.particles[i];
-
-          // particle.position.y = (Math.sin((ix + count) * 0.3) * 50) + (Math.sin((iy + count) * 0.5) * 50);
-          particle.position.y = Math.sin((ix + vm.particleCount) * 0.3) * 15 + Math.sin((iy + vm.particleCount) * 0.5) * 15;
-          // particle.scale.x = (Math.sin((ix + vm.particleCount) * 0.3) + 1) * 4 + (Math.sin((iy + vm.particleCount) * 0.5) + 1) * 4;
-          i += 1;
+          positions[i + 1] = Math.sin((ix + vm.particleCount) * 0.3) * 10 + Math.sin((iy + vm.particleCount) * 0.5) * 10;
+          scales[j] = (Math.sin((ix + vm.particleCount) * 0.3) + 1) * 2 + (Math.sin((ix + vm.particleCount) * 0.5) + 1) * 2;
+          i += 3;
+          j += 1;
         }
       }
+
+      vm.particles.geometry.attributes.position.needsUpdate = true;
+      vm.particles.geometry.attributes.scale.needsUpdate = true;
 
       vm.particleCount += 0.1;
     },
