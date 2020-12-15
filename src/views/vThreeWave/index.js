@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import Stats from 'three/examples/jsm/libs/stats.module';
+import * as dat from 'dat.gui';
 // import { TransformControls } from 'three/examples/jsm/controls/TransformControls';
 
 export default {
@@ -32,9 +33,12 @@ export default {
         positions: [],
         scales: [],
         SEPARATION: 10,
+        positionOffset: 10,
+        scaleOffset: 2,
       },
       particles: [],
       particleCount: 0,
+      dateGUI: null,
     };
   },
   methods: {
@@ -46,12 +50,27 @@ export default {
       vm.three.stats = new Stats();
       vm.three.container.appendChild(vm.three.stats.dom);
 
+      vm.createDatGUI();
       vm.createScene();
       vm.createObj();
       vm.createLight();
       vm.createHelper();
       vm.animate();
       vm.renderScene();
+    },
+    createDatGUI: function() {
+      const vm = this;
+      vm.dateGUI = new dat.GUI();
+      vm.dateGUI
+        .add(vm.configure, 'positionOffset')
+        .min(2)
+        .max(10)
+        .step(0.5);
+      vm.dateGUI
+        .add(vm.configure, 'scaleOffset')
+        .min(1)
+        .max(4)
+        .step(0.5);
     },
     createScene: function() {
       console.log('-- createScene Function --');
@@ -153,6 +172,9 @@ export default {
       const vm = this;
 
       vm.updateParticle();
+      // if (vm.particleCount % 3 === 0) {
+      //   vm.
+      // }
 
       vm.three.renderer.render(vm.three.scene, vm.three.camera);
     },
@@ -166,8 +188,8 @@ export default {
 
       for (let ix = 0; ix < vm.configure.amountX; ix += 1) {
         for (let iy = 0; iy < vm.configure.amountY; iy += 1) {
-          positions[i + 1] = Math.sin((ix + vm.particleCount) * 0.3) * 10 + Math.sin((iy + vm.particleCount) * 0.5) * 10;
-          scales[j] = (Math.sin((ix + vm.particleCount) * 0.3) + 1) * 2 + (Math.sin((ix + vm.particleCount) * 0.5) + 1) * 2;
+          positions[i + 1] = Math.sin((ix + vm.particleCount) * 0.3) * vm.configure.positionOffset + Math.sin((iy + vm.particleCount) * 0.5) * vm.configure.positionOffset;
+          scales[j] = (Math.sin((ix + vm.particleCount) * 0.3) + 1) * vm.configure.scaleOffset + (Math.sin((ix + vm.particleCount) * 0.5) + 1) * vm.configure.scaleOffset;
           i += 3;
           j += 1;
         }
@@ -178,22 +200,43 @@ export default {
 
       vm.particleCount += 0.1;
     },
+    updateColor: function() {
+      const vm = this;
+
+      const colors = vm.particles.geometry.attributes.color.array;
+      const count = vm.configure.amountX * vm.configure.amountY;
+      let tmpValue = 0;
+      for (let i = 0; i < count; i += 1) {
+        colors[tmpValue] = Math.random();
+        colors[tmpValue + 1] = Math.random();
+        colors[tmpValue + 2] = Math.random();
+        colors[tmpValue + 3] = 1;
+
+        tmpValue += 4;
+      }
+
+      vm.particles.geometry.attributes.color.needsUpdate = true;
+    },
   },
   computed: {},
   // life cycle
   beforeCreate: function() {},
   created: function() {
-    console.log('*** three wave created ***');
+    console.warn('*** three wave created ***');
   },
   beforeMounted: function() {},
   mounted: function() {
-    console.log('*** three wave mounted ***');
+    console.warn('*** three wave mounted ***');
     const vm = this;
 
     vm.init();
   },
   beforeUpdate: function() {},
   updated: function() {},
-  beforeDestroy: function() {},
+  beforeDestroy: function() {
+    const vm = this;
+    console.warn('*** three wave beforeDestroy ***');
+    vm.dateGUI.destroy();
+  },
   Destroy: function() {},
 };
