@@ -1,0 +1,14 @@
+<div>
+  This is i18n view
+  <li v-for="(navItem, mavIndex) in $t('GENERAL.NAV_OPTIONS')" :key="navItem">
+    {{ navItem }}
+  </li>
+  <h1>{{ $t('GENERAL.CONTINUE') }}</h1>
+  <h1>{{ $t('GENERAL.CANCEL') }}</h1>
+  <h1>{{ $t('GENERAL.GUEST') }}</h1>
+  <h1>{{ $tc('GENERAL.APPLE', 10, { count: '神偷'})}}</h1>
+  <div>
+    <button data-lang="TW" @click="$_setLang">中文</button>
+    <button data-lang="EN" @click="$_setLang">English</button>
+  </div>
+</div>
