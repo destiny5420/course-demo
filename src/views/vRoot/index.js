@@ -14,6 +14,7 @@ export default {
         { name: 'Bus', link: '/bus' },
         { name: 'FB-Login', link: '/fb-login' },
         { name: 'Three-Wave', link: '/three-wave' },
+        { name: 'I18n', link: '/i18n' },
       ],
     };
   },
