@@ -6,6 +6,7 @@ import Bus from '@/views/vBus/index.vue';
 import FBLogin from '@/views/vFBLogin/index.vue';
 import ThreeWave from '@/views/vThreeWave/index.vue';
 import I18n from '@/views/vI18n/index.vue';
+import ComponentModel from '@/views/vComponentModel/index.vue';
 
 Vue.use(VueRouter);
 
@@ -39,6 +40,11 @@ const routes = [
     path: '/i18n',
     name: 'I18n',
     component: I18n,
+  },
+  {
+    path: '/componentModel',
+    name: 'ComponentModel',
+    component: ComponentModel,
   },
 ];
 
