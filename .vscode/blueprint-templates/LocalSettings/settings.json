@@ -1,0 +1,10 @@
+{
+  "editor.formatOnSave": true,
+  "editor.snippetSuggestions": "top",
+  "blueprint.templatesPath": [".vscode/blueprint-templates"],
+  "editor.autoClosingBrackets": "always", // 是否自動補齊右括號 {}
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}
