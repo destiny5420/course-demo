@@ -7,6 +7,7 @@ import FBLogin from '@/views/vFBLogin/index.vue';
 import ThreeWave from '@/views/vThreeWave/index.vue';
 import I18n from '@/views/vI18n/index.vue';
 import ComponentModel from '@/views/vComponentModel/index.vue';
+import Pixi from '@/views/vPixi/index.vue';
 
 Vue.use(VueRouter);
 
@@ -45,6 +46,11 @@ const routes = [
     path: '/componentModel',
     name: 'ComponentModel',
     component: ComponentModel,
+  },
+  {
+    path: '/pixi',
+    name: 'Pixi',
+    component: Pixi,
   },
 ];
 

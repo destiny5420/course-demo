@@ -16,6 +16,7 @@ export default {
         { name: 'Three-Wave', link: '/three-wave' },
         { name: 'I18n', link: '/i18n' },
         { name: 'ComponentModel', link: '/componentModel' },
+        { name: 'Pixi', link: '/pixi' },
       ],
     };
   },
