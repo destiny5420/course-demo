@@ -11,6 +11,7 @@ export default {
       container: null,
       textures: {},
       sprites: {},
+      rotationSpeed: 0.01,
       speed: 0.0,
       velocity: 1, // 1: forward | -1: back
     };
@@ -26,24 +27,30 @@ export default {
         console.log('click player button');
       });
 
-      vm.container.y = 360;
       vm.container.addChild(vm.sprites.btn_play);
+
+      vm.container.position.set(window.innerWidth / 2, 360);
+      vm.container.pivot.set(vm.container.width / 2, 0);
+      console.log('awake / ', vm.container.width, ' / ', vm.container.height);
     },
-    update: function() {
+    update: function(deltaTime) {
       const vm = this;
-      // console.log('mouse ', `/ x: {${vm.appliction.renderer.plugins.interaction.mouse.global.x}} / y: ${vm.appliction.renderer.plugins.interaction.mouse.global.y}`);
-      // console.log('x: ', vm.application.renderer.plugins.interaction.mouse.global.x);
-      // console.log('y: ', vm.application.renderer.plugins.interaction.mouse.global.y);
+
       // if (vm.container.x >= 1280) {
       //   vm.velocity = -1;
       // } else if (vm.container.x <= 0) {
       //   vm.velocity = 1;
       // }
 
+      // // control for container move
       // vm.container.x += vm.velocity * deltaTime * vm.speed;
 
-      vm.container.x = vm.application.renderer.plugins.interaction.mouse.global.x;
-      vm.container.y = vm.application.renderer.plugins.interaction.mouse.global.y;
+      // control for container rotation
+      vm.container.rotation += vm.rotationSpeed * deltaTime;
+
+      // container pos follow mouse x & y
+      // vm.container.x = vm.application.renderer.plugins.interaction.mouse.global.x;
+      // vm.container.y = vm.application.renderer.plugins.interaction.mouse.global.y;
     },
   },
   computed: {},
@@ -107,17 +114,29 @@ export default {
 
     // vm.container.addChild(PIXIText);
 
+    function onLoadProgressHandler(loader, resource) {
+      console.log('loading: ', resource.url);
+      console.log(`progress: ${loader.progress}%`);
+    }
+
+    function onDown(loader, resource) {
+      console.log('Down');
+
+      vm.textures.btn_play = resource.btn_play.texture;
+      vm.awake();
+    }
+
     const loader = new PIXI.Loader();
     loader
-      .add('btn_play', btnPlayAssets)
-      .add('btn_assets', 'https://i.imgur.com/SkUNDOQ.jpg')
-      .load((loader1, resource) => {
-        console.log('Done');
-        // store textures
-        vm.textures.btn_play = resource.btn_play.texture;
+      .add('btn_play', btnPlayAssets, function() {
+        console.log('btn_play loading complete!!');
+      })
+      .add('btn_assets', 'https://i.imgur.com/SkUNDOQ.jpg', function() {
+        console.log('btn_assets loading complete!!');
+      })
+      .load(onDown);
 
-        vm.awake();
-      });
+    loader.onProgress.add(onLoadProgressHandler);
   },
   beforeUpdate: function() {},
   updated: function() {},
