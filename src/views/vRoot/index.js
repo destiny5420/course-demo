@@ -1,10 +1,12 @@
 import cAlert from '@/components/cAlert/index.vue';
+import cNavBarButton from '@/components/cNavBarButton/index.vue';
 
 export default {
   name: 'vRoot',
   props: {},
   components: {
     cAlert,
+    cNavBarButton,
   },
   data: function() {
     return {

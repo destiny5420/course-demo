@@ -9,6 +9,7 @@ export default {
     return {
       application: null,
       container: null,
+      hp: null,
       textures: {},
       sprites: {},
       rotationSpeed: 0.01,
@@ -23,34 +24,67 @@ export default {
       vm.sprites.btn_play = new PIXI.Sprite(vm.textures.btn_play);
       vm.sprites.btn_play.anchor.set(0.5);
       vm.sprites.btn_play.interactive = true;
-      vm.sprites.btn_play.on('tap', () => {
-        console.log('click player button');
-      });
+      vm.sprites.btn_play.buttonMode = true;
+      /* mouse event | need to set interactive true */
+      // vm.sprites.btn_play.on('tap', () => {
+      //   console.log('tap player button');
+      // });
+      vm.sprites.btn_play.click = () => {
+        alert('click player button');
+      };
 
       vm.container.addChild(vm.sprites.btn_play);
+      vm.container.pivot.set(0, 0);
+      vm.container.position.set(0, 0);
+      vm.createGraphics();
 
-      vm.container.position.set(window.innerWidth / 2, 360);
-      vm.container.pivot.set(vm.container.width / 2, 0);
       console.log('awake / ', vm.container.width, ' / ', vm.container.height);
     },
-    update: function(deltaTime) {
-      const vm = this;
-
+    update: function() {
+      // const vm = this;
       // if (vm.container.x >= 1280) {
       //   vm.velocity = -1;
       // } else if (vm.container.x <= 0) {
       //   vm.velocity = 1;
       // }
-
       // // control for container move
       // vm.container.x += vm.velocity * deltaTime * vm.speed;
-
       // control for container rotation
-      vm.container.rotation += vm.rotationSpeed * deltaTime;
-
+      // vm.container.rotation += vm.rotationSpeed * deltaTime;
       // container pos follow mouse x & y
       // vm.container.x = vm.application.renderer.plugins.interaction.mouse.global.x;
       // vm.container.y = vm.application.renderer.plugins.interaction.mouse.global.y;
+    },
+    createGraphics: function() {
+      const vm = this;
+      console.log('** create Graphics **');
+
+      const graphicsRect = new PIXI.Graphics();
+      graphicsRect.lineStyle(5, 0x000000, 1.0);
+      graphicsRect.beginFill(0x000000);
+      graphicsRect.drawRect(200, 200, 50, 50);
+      graphicsRect.endFill();
+      vm.container.addChild(graphicsRect);
+
+      const graphicHpFrame = new PIXI.Graphics();
+      graphicHpFrame.beginFill(0x000000);
+      graphicHpFrame.drawRoundedRect(0, 0, 300, 50, 10);
+      graphicHpFrame.endFill();
+      vm.hp.addChild(graphicHpFrame);
+
+      const graphicHpBar = new PIXI.Graphics();
+      graphicHpBar.beginFill(0xff0000);
+      graphicHpBar.drawRoundedRect(0, 0, 300, 50, 10);
+      graphicHpBar.endFill();
+      console.log('graphicHpBar: ', graphicHpBar);
+      graphicHpBar.pivot.set(150, 0);
+      graphicHpBar.x = 150;
+      vm.hp.hpStatus = graphicHpBar;
+      vm.hp.hpStatus.scale.x = 0.5;
+      vm.hp.addChild(graphicHpBar);
+
+      vm.hp.x = 500;
+      vm.hp.y = 200;
     },
   },
   computed: {},
@@ -68,8 +102,8 @@ export default {
     PIXI.utils.sayHello(type);
 
     vm.application = new PIXI.Application({
-      width: window.innerWidth,
-      height: 720,
+      width: window.innerWidth - window.innerWidth * 0.15,
+      height: window.innerHeight - 10,
       antialias: true,
       transparent: false,
       backgroundColor: 0x00cc99,
@@ -103,8 +137,9 @@ export default {
     vm.application.ticker.add(vm.update);
 
     vm.container = new PIXI.Container();
+    vm.hp = new PIXI.Container();
     vm.application.stage.addChild(vm.container);
-
+    vm.application.stage.addChild(vm.hp);
     // const PIXIText = new PIXI.Text('Hello World', {
     //   fontFamily: 'Arial',
     //   fontSize: 100,
@@ -119,8 +154,8 @@ export default {
       console.log(`progress: ${loader.progress}%`);
     }
 
-    function onDown(loader, resource) {
-      console.log('Down');
+    function onSetup(loader, resource) {
+      console.log('onSetup');
 
       vm.textures.btn_play = resource.btn_play.texture;
       vm.awake();
@@ -134,7 +169,7 @@ export default {
       .add('btn_assets', 'https://i.imgur.com/SkUNDOQ.jpg', function() {
         console.log('btn_assets loading complete!!');
       })
-      .load(onDown);
+      .load(onSetup);
 
     loader.onProgress.add(onLoadProgressHandler);
   },

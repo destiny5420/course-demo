@@ -1,9 +1,11 @@
 <div id="app">
   <div id="nav">
     <div v-for="(item, index) in menuDatas" :key="index">
-      <router-link :to="item.link">{{ item.name }}</router-link>
+      <cNavBarButton :link="item.link" :display-name="item.name"></cNavBarButton>
     </div>
   </div>
-  <router-view />
+  <div id="main">
+    <router-view />
+  </div>
   <cAlert></cAlert>
 </div>

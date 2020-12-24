@@ -4,10 +4,24 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+
+#nav,
+#main {
+  border: 1px solid gray;
 }
 
 #nav {
-  padding: 30px;
+  width: 15%;
+  height: 100vh;
+  overflow-x: hidden;
 }
 
 #nav a {
@@ -19,9 +33,9 @@
   color: #42b983;
 }
 
-#nav > div {
-  display: inline-block;
-  margin-right: 5px;
+#main {
+  width: calc(100% - 15%);
+  height: 100vh;
 }
 
 .dash-line {
@@ -33,5 +47,7 @@
 
 * {
   margin: 0;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
 }
 /*# sourceMappingURL=style.css.map */

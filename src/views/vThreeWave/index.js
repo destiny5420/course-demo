@@ -80,11 +80,11 @@ export default {
       vm.three.scene = new THREE.Scene();
 
       // -- create camera
-      vm.three.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      vm.three.camera = new THREE.PerspectiveCamera(75, (window.innerWidth - window.innerWidth * 0.15) / window.innerHeight, 0.1, 1000);
       vm.three.camera.position.set(vm.configure.startupPos.x, vm.configure.startupPos.y, vm.configure.startupPos.z);
 
       vm.three.renderer = window.WebGLRenderingContext ? new THREE.WebGLRenderer({ antialias: true }) : new THREE.CanvasRenderer();
-      vm.three.renderer.setSize(window.innerWidth, window.innerHeight);
+      vm.three.renderer.setSize(window.innerWidth - window.innerWidth * 0.15, window.innerHeight);
       vm.three.renderer.setClearColor(0x07074e, 1); // setting background color;
 
       vm.three.container.appendChild(vm.three.renderer.domElement);

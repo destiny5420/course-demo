@@ -4,10 +4,18 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  display: flex;
+  flex-direction: row;
+}
+
+#nav,
+#main {
+  border: 1px solid gray;
 }
 
 #nav {
-  padding: 30px;
+  width: 15%;
+  height: 100vh;
 
   a {
     font-weight: bold;
@@ -18,10 +26,12 @@
     }
   }
 
-  > div {
-    display: inline-block;
-    margin-right: 5px;
-  }
+  overflow-x: hidden;
+}
+
+#main {
+  width: calc(100% - 15%);
+  height: 100vh;
 }
 
 .dash-line {
@@ -33,4 +43,5 @@
 
 * {
   margin: 0;
+  box-sizing: border-box;
 }
