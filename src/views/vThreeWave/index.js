@@ -120,8 +120,6 @@ export default {
         }
       }
 
-      // console.warn(colors);
-
       const particleGeometry = new THREE.BufferGeometry();
       particleGeometry.setAttribute('position', new THREE.BufferAttribute(vm.configure.positions, 3));
       particleGeometry.setAttribute('scale', new THREE.BufferAttribute(vm.configure.scales, 1));

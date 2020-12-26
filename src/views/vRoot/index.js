@@ -19,6 +19,7 @@ export default {
         { name: 'I18n', link: '/i18n' },
         { name: 'ComponentModel', link: '/componentModel' },
         { name: 'Pixi', link: '/pixi' },
+        { name: 'ShaderSmile', link: '/shader-smile' },
       ],
     };
   },
