@@ -4,7 +4,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 export default {
-  name: '{{ $javascriptName }}',
+  name: 'vSmokeThree',
   props: {},
   components: {},
   data: function() {
@@ -15,12 +15,13 @@ export default {
       camera: null,
       renderer: null,
       orbitControls: null,
+      clock: null,
       main_light: {
         obj: null,
         intensity: 0.85,
         pos: {
-          x: 1,
-          y: 1,
+          x: 0,
+          y: 0,
           z: 1,
         },
       },
@@ -42,6 +43,7 @@ export default {
         z: 0,
       },
       datGUI: null,
+      smokeParticles: [],
     };
   },
   methods: {
@@ -55,17 +57,20 @@ export default {
       // -- create scene
       vm.scene = new THREE.Scene();
 
+      // --- create clock
+      vm.clock = new THREE.Clock();
+
       // -- create camera
       const fov = 60; // Field of view;
       const aspect = vm.canvasWidth / vm.canvasHeight;
       const near = 0.1;
-      const far = 1000;
+      const far = 10000;
       vm.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-      vm.camera.position.set(-5, 5, 12);
+      vm.camera.position.set(0, 0, 1500);
       vm.camera.lookAt(new THREE.Vector3(0.0, 0.0, 0.0));
       vm.scene.add(vm.camera);
 
-      vm.renderer = window.WebGLRenderingContext ? new THREE.WebGLRenderer({ antialias: true, alpha: true }) : new THREE.CanvasRenderer();
+      vm.renderer = window.WebGLRenderingContext ? new THREE.WebGLRenderer({ antialias: true }) : new THREE.CanvasRenderer();
       vm.renderer.setSize(vm.canvasWidth, vm.canvasHeight);
       vm.renderer.setPixelRatio(window.devicePixelRatio);
       vm.container.appendChild(vm.renderer.domElement);
@@ -78,11 +83,6 @@ export default {
       vm.main_light.obj.position.set(vm.main_light.pos.x, vm.main_light.pos.y, vm.main_light.pos.z);
       vm.scene.add(vm.main_light.obj);
 
-      // -- create second light
-      vm.second_light.obj = new THREE.DirectionalLight('#ffffff', vm.second_light.intensity);
-      vm.second_light.obj.position.set(vm.second_light.pos.x, vm.second_light.pos.y, vm.second_light.pos.z);
-      vm.scene.add(vm.second_light.obj);
-
       const light2 = new THREE.DirectionalLight('#ffffff', 0.35);
       light2.position.set(-1.0, 0.0, -1.0);
       vm.scene.add(light2);
@@ -90,14 +90,18 @@ export default {
       // -- create object
       vm.loader = new GLTFLoader();
       vm.loader.load(vm.model_path, vm.onLoaderFinish, undefined, vm.onLoaderError);
+
+      // --- create smoke particle
+      vm.particleSetup();
     },
     render: function() {
       const vm = this;
-      requestAnimationFrame(vm.render);
 
       vm.onUpdateObject(vm);
+      vm.onUpdateParticle(vm);
 
       vm.renderer.render(vm.scene, vm.camera);
+      requestAnimationFrame(vm.render);
     },
     onLoaderFinish: function(gltf) {
       const vm = this;
@@ -116,6 +120,12 @@ export default {
       }
 
       vm.model.position.set(vm.model_pos.x, vm.model_pos.y, vm.model_pos.z);
+    },
+    onUpdateParticle: function(vm) {
+      const delta = vm.clock.getDelta();
+      vm.smokeParticles.forEach((element) => {
+        element.rotation.z -= delta * 1.5;
+      });
     },
     createHelper: function() {
       const vm = this;
@@ -145,6 +155,29 @@ export default {
         .min(-10)
         .max(10)
         .step(0.1);
+    },
+    particleSetup: function() {
+      console.log('*** particle setup ***');
+      const vm = this;
+
+      const loader = new THREE.TextureLoader();
+      loader.load('textures/smoke.png', function(texture) {
+        const portalGeo = new THREE.PlaneBufferGeometry(250.0, 250.0);
+        const portalMaterial = new THREE.MeshStandardMaterial({
+          map: texture,
+          transparent: true,
+          alphaTest: 0.1,
+          side: THREE.DoubleSide,
+        });
+
+        for (let i = 880; i > 250; i -= 1) {
+          const particle = new THREE.Mesh(portalGeo, portalMaterial);
+          particle.position.set(0.5 * i * Math.cos((4 * i * Math.PI) / 180), 0.5 * i * Math.sin((4 * i * Math.PI) / 180), 0.25 * i);
+          particle.rotation.z = Math.random() * 360;
+          vm.smokeParticles.push(particle);
+          vm.scene.add(particle);
+        }
+      });
     },
   },
   computed: {

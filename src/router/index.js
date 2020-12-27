@@ -50,6 +50,11 @@ const routes = [
     component: () => import('@/views/vModelThree/index.vue'),
   },
   {
+    path: '/smoke-three',
+    name: 'SmokeThree',
+    component: () => import('@/views/vSmokeThree/index.vue'),
+  },
+  {
     path: '/shader-smile',
     name: 'ShaderSmile',
     component: () => import('@/views/vShaderSmile/index.vue'),

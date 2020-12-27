@@ -19,5 +19,6 @@ module.exports = {
     'prefer-arrow-callback': 0,
     'max-len': ['off', { code: 200 }],
     'no-unused-vars': 1,
+    'no-param-reassign': 0,
   },
 };
