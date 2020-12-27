@@ -1,10 +1,16 @@
 import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import * as dat from 'dat.gui';
 
 let container;
 let camera;
 let scene;
 let renderer;
 let uniforms;
+let datGUI;
+const cameraData = {
+  z: 1,
+};
 
 function onWindowResize() {
   renderer.setSize(window.innerWidth - window.innerWidth * 0.15, window.innerHeight);
@@ -14,6 +20,7 @@ function onWindowResize() {
 
 function render() {
   uniforms.u_time.value += 0.05;
+  camera.position.z = cameraData.z;
   renderer.render(scene, camera);
 }
 
@@ -28,8 +35,16 @@ function init() {
 
   container = document.getElementById('shader-smile-main');
 
+  datGUI = new dat.GUI();
+  datGUI
+    .add(cameraData, 'z')
+    .min(1)
+    .max(5)
+    .step(0.5);
+
   camera = new THREE.Camera();
-  camera.position.z = 1;
+  console.log('cameraData.z: ', cameraData);
+  camera.position.z = cameraData.z;
 
   scene = new THREE.Scene();
 
@@ -52,9 +67,17 @@ function init() {
   renderer = new THREE.WebGLRenderer();
   renderer.setPixelRatio(window.devicePixelRatio);
 
+  const paperOrbitControls = new OrbitControls(camera, renderer.domElement);
+
   container.appendChild(renderer.domElement);
   onWindowResize();
   window.addEventListener('resize', onWindowResize, false);
+
+  const gridSize = 10;
+  const divisions = 10;
+  const gridHelper = new THREE.GridHelper(gridSize, divisions);
+
+  scene.add(gridHelper);
 }
 
 export default {
@@ -64,6 +87,7 @@ export default {
   data: function() {
     return {
       shaderSmileData: null,
+      orbitControls: null,
     };
   },
   methods: {},
