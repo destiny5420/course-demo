@@ -15,10 +15,10 @@ export default {
         { name: 'Emmit', link: '/emmit' },
         { name: 'Bus', link: '/bus' },
         { name: 'FB-Login', link: '/fb-login' },
-        { name: 'Three-Wave', link: '/three-wave' },
         { name: 'I18n', link: '/i18n' },
         { name: 'ComponentModel', link: '/componentModel' },
         { name: 'Pixi', link: '/pixi' },
+        { name: 'Three-Wave', link: '/three-wave' },
         { name: 'ShaderSmile', link: '/shader-smile' },
       ],
     };
