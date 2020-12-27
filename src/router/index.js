@@ -47,7 +47,7 @@ const routes = [
   {
     path: '/model-three',
     name: 'ModelThree',
-    component: () => import('@/views/vModelInThree/index.vue'),
+    component: () => import('@/views/vModelThree/index.vue'),
   },
   {
     path: '/shader-smile',
