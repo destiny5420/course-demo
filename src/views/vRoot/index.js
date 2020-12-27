@@ -18,6 +18,7 @@ export default {
         { name: 'I18n', link: '/i18n' },
         { name: 'ComponentModel', link: '/componentModel' },
         { name: 'Pixi', link: '/pixi' },
+        { name: 'Model-Three', link: '/model-three' },
         { name: 'Three-Wave', link: '/three-wave' },
         { name: 'ShaderSmile', link: '/shader-smile' },
       ],
