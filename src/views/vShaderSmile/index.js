@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import * as dat from 'dat.gui';
+import { VertexShader, FragmentShader } from './shader';
 
 let container;
 let camera;
@@ -43,7 +44,6 @@ function init() {
     .step(0.5);
 
   camera = new THREE.Camera();
-  console.log('cameraData.z: ', cameraData);
   camera.position.z = cameraData.z;
 
   scene = new THREE.Scene();
@@ -57,8 +57,8 @@ function init() {
 
   const material = new THREE.ShaderMaterial({
     uniforms: uniforms,
-    vertexShader: document.getElementById('vertexshader').textContent,
-    fragmentShader: document.getElementById('fragmentshader').textContent,
+    vertexShader: VertexShader,
+    fragmentShader: FragmentShader,
   });
 
   const mesh = new THREE.Mesh(geometry, material);
