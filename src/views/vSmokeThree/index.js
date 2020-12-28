@@ -226,8 +226,9 @@ export default {
   beforeDestroy: function() {
     console.log('*** before destroy ***');
     const vm = this;
-
     vm.startup = false;
+
+    vm.datGUI.destroy();
   },
   Destroy: function() {},
 };

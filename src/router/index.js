@@ -64,6 +64,11 @@ const routes = [
     name: 'CarThree',
     component: () => import('@/views/vCarThree/index.vue'),
   },
+  {
+    path: '/postprocessing-effect-three',
+    name: 'PostprocessingEffectThree',
+    component: () => import('@/views/vPostprocessingEffectThree/index.vue'),
+  },
 ];
 
 const router = new VueRouter({

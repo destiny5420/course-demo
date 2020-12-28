@@ -209,6 +209,10 @@ export default {
   },
   beforeUpdate: function() {},
   updated: function() {},
-  beforeDestroy: function() {},
+  beforeDestroy: function() {
+    const vm = this;
+    console.warn('*** three wave beforeDestroy ***');
+    vm.datGUI.destroy();
+  },
   Destroy: function() {},
 };

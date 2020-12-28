@@ -102,6 +102,8 @@ export default {
   },
   beforeUpdate: function() {},
   updated: function() {},
-  beforeDestroy: function() {},
+  beforeDestroy: function() {
+    datGUI.destroy();
+  },
   Destroy: function() {},
 };

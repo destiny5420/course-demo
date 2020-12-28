@@ -38,7 +38,7 @@ export default {
       },
       particles: [],
       particleCount: 0,
-      dateGUI: null,
+      datGUI: null,
     };
   },
   methods: {
@@ -60,13 +60,13 @@ export default {
     },
     createDatGUI: function() {
       const vm = this;
-      vm.dateGUI = new dat.GUI();
-      vm.dateGUI
+      vm.datGUI = new dat.GUI();
+      vm.datGUI
         .add(vm.configure, 'positionOffset')
         .min(2)
         .max(10)
         .step(0.5);
-      vm.dateGUI
+      vm.datGUI
         .add(vm.configure, 'scaleOffset')
         .min(1)
         .max(4)
@@ -234,7 +234,7 @@ export default {
   beforeDestroy: function() {
     const vm = this;
     console.warn('*** three wave beforeDestroy ***');
-    vm.dateGUI.destroy();
+    vm.datGUI.destroy();
   },
   Destroy: function() {},
 };

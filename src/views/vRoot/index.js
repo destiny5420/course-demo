@@ -22,6 +22,7 @@ export default {
         { name: 'Car-Three', link: '/car-three' },
         { name: 'Smoke-Three', link: '/smoke-three' },
         { name: 'Three-Wave', link: '/three-wave' },
+        { name: 'PostprocessingEffect-Three', link: '/postprocessing-effect-three' },
         { name: 'ShaderSmile', link: '/shader-smile' },
       ],
     };
