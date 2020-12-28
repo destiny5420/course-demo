@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import * as dat from 'dat.gui';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import * as POSTPROCESSING from 'postprocessing';
 
 export default {
   name: 'vPostprocessingEffectThree',
@@ -16,6 +17,11 @@ export default {
       renderer: null,
       orbitControls: null,
       transformControls: null,
+      composer: null,
+      bloomEffect: null,
+      postprocessing: {
+        blurIntensity: 3,
+      },
       main_light: {
         obj: null,
         intensity: 0.85,
@@ -63,7 +69,7 @@ export default {
       const near = 0.1;
       const far = 1000;
       vm.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-      vm.camera.position.set(-1.1, 1.1, 2.7);
+      vm.camera.position.set(-2.217, 1.566, 0.55);
       vm.camera.lookAt(new THREE.Vector3(0.0, 0.0, 0.0));
       vm.scene.add(vm.camera);
 
@@ -76,6 +82,15 @@ export default {
       vm.orbitControls = new OrbitControls(vm.camera, vm.renderer.domElement);
       // vm.orbitControls.autoRotate = true;
       vm.orbitControls.enableDamping = true;
+
+      // -- create postprocessing
+      vm.composer = new POSTPROCESSING.EffectComposer(vm.renderer);
+      vm.composer.addPass(new POSTPROCESSING.RenderPass(vm.scene, vm.camera));
+      vm.bloomEffect = new POSTPROCESSING.BloomEffect();
+      vm.bloomEffect.intensity = vm.postprocessing.blurIntensity;
+      const effectPass = new POSTPROCESSING.EffectPass(vm.scene, vm.bloomEffect);
+      effectPass.renderToScreen = true;
+      vm.composer.addPass(effectPass);
 
       // -- create light
       const light1 = new THREE.PointLight(0xffffff, 2);
@@ -111,9 +126,11 @@ export default {
       const vm = this;
       requestAnimationFrame(vm.render);
       vm.orbitControls.update();
-      vm.onUpdateObject(vm);
 
-      vm.renderer.render(vm.scene, vm.camera);
+      vm.onUpdateObject(vm);
+      vm.bloomEffect.intensity = vm.postprocessing.blurIntensity;
+      vm.composer.render();
+      // vm.renderer.render(vm.scene, vm.camera);
     },
     onLoaderFinish: function(gltf) {
       const vm = this;
@@ -160,6 +177,12 @@ export default {
         .add(vm.model_pos, 'z')
         .min(-10)
         .max(10)
+        .step(0.1);
+
+      vm.datGUI
+        .add(vm.postprocessing, 'blurIntensity')
+        .min(0)
+        .max(5)
         .step(0.1);
     },
   },
