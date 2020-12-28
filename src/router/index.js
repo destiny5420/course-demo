@@ -59,6 +59,11 @@ const routes = [
     name: 'ShaderSmile',
     component: () => import('@/views/vShaderSmile/index.vue'),
   },
+  {
+    path: '/car-three',
+    name: 'CarThree',
+    component: () => import('@/views/vCarThree/index.vue'),
+  },
 ];
 
 const router = new VueRouter({

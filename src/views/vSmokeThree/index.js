@@ -19,6 +19,7 @@ export default {
   components: {},
   data: function() {
     return {
+      startup: false,
       container: null,
       loader: null,
       scene: null,
@@ -55,6 +56,7 @@ export default {
       console.log('*** init ***');
       const vm = this;
 
+      vm.startup = true;
       // -- get container
       vm.container = vm.$refs.container;
 
@@ -100,6 +102,10 @@ export default {
     },
     render: function() {
       const vm = this;
+
+      if (vm.startup === false) {
+        return;
+      }
 
       vm.onUpdateObject(vm);
       vm.onUpdateParticle(vm);
@@ -217,6 +223,11 @@ export default {
   },
   beforeUpdate: function() {},
   updated: function() {},
-  beforeDestroy: function() {},
+  beforeDestroy: function() {
+    console.log('*** before destroy ***');
+    const vm = this;
+
+    vm.startup = false;
+  },
   Destroy: function() {},
 };

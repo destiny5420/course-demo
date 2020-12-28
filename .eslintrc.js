@@ -20,5 +20,6 @@ module.exports = {
     'max-len': ['off', { code: 200 }],
     'no-unused-vars': 1,
     'no-param-reassign': 0,
+    'prefer-destructuring': 0,
   },
 };

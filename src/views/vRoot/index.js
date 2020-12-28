@@ -19,6 +19,7 @@ export default {
         { name: 'ComponentModel', link: '/componentModel' },
         { name: 'Pixi', link: '/pixi' },
         { name: 'Model-Three', link: '/model-three' },
+        { name: 'Car-Three', link: '/car-three' },
         { name: 'Smoke-Three', link: '/smoke-three' },
         { name: 'Three-Wave', link: '/three-wave' },
         { name: 'ShaderSmile', link: '/shader-smile' },
