@@ -170,6 +170,10 @@ export default {
   },
   beforeUpdate: function() {},
   updated: function() {},
-  beforeDestroy: function() {},
+  beforeDestroy: function() {
+    console.log('*** before destroy ***');
+    const vm = this;
+    vm.datGUI.destroy();
+  },
   Destroy: function() {},
 };
