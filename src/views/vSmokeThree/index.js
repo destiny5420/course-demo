@@ -3,6 +3,16 @@ import * as dat from 'dat.gui';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
+function clamp(val, min, max) {
+  const MIN = min || 0;
+  const MAX = max || 1;
+  return Math.min(Math.max(val, MIN), MAX);
+}
+
+function valueTrueFalse01(limitValue) {
+  return Math.ceil(clamp(Math.random() - clamp(limitValue)));
+}
+
 export default {
   name: 'vSmokeThree',
   props: {},
@@ -25,14 +35,8 @@ export default {
           z: 1,
         },
       },
-      second_light: {
+      point_light: {
         obj: null,
-        intensity: 0.25,
-        pos: {
-          x: -1,
-          y: 1,
-          z: -1,
-        },
       },
       modelLoadingComplete: false,
       model_path: 'models/threeModel.glb',
@@ -83,9 +87,9 @@ export default {
       vm.main_light.obj.position.set(vm.main_light.pos.x, vm.main_light.pos.y, vm.main_light.pos.z);
       vm.scene.add(vm.main_light.obj);
 
-      const light2 = new THREE.DirectionalLight('#ffffff', 0.35);
-      light2.position.set(-1.0, 0.0, -1.0);
-      vm.scene.add(light2);
+      vm.point_light = new THREE.PointLight(0x062d89, 30, 350, 1.7);
+      vm.point_light.position.set(0.0, 0.0, 250.0);
+      vm.scene.add(vm.point_light);
 
       // -- create object
       vm.loader = new GLTFLoader();
@@ -126,6 +130,16 @@ export default {
       vm.smokeParticles.forEach((element) => {
         element.rotation.z -= delta * 1.5;
       });
+
+      // --- case 1
+      const powerUnit = valueTrueFalse01(0.9);
+      console.log('power Unit: ', powerUnit);
+      vm.point_light.power = (350.0 + Math.random() * 500.0) * powerUnit + 377.0 * (1.0 - powerUnit);
+
+      // --- case 2
+      // if (Math.random() > 0.9) {
+      //   vm.point_light.power = 350.0 + Math.random() * 500.0;
+      // }
     },
     createHelper: function() {
       const vm = this;
@@ -170,7 +184,7 @@ export default {
           side: THREE.DoubleSide,
         });
 
-        for (let i = 880; i > 250; i -= 1) {
+        for (let i = 880; i > 150; i -= 1) {
           const particle = new THREE.Mesh(portalGeo, portalMaterial);
           particle.position.set(0.5 * i * Math.cos((4 * i * Math.PI) / 180), 0.5 * i * Math.sin((4 * i * Math.PI) / 180), 0.25 * i);
           particle.rotation.z = Math.random() * 360;
