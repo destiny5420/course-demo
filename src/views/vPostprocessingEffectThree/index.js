@@ -15,6 +15,7 @@ export default {
       camera: null,
       renderer: null,
       orbitControls: null,
+      transformControls: null,
       main_light: {
         obj: null,
         intensity: 0.85,
@@ -34,7 +35,7 @@ export default {
         },
       },
       modelLoadingComplete: false,
-      model_path: 'models/threeModel.glb',
+      model_path: 'models/DrakeFireGun/scene.gltf',
       model: null,
       model_pos: {
         x: 0,
@@ -54,6 +55,7 @@ export default {
 
       // -- create scene
       vm.scene = new THREE.Scene();
+      vm.scene.background = new THREE.Color(0xdddddd);
 
       // -- create camera
       const fov = 60; // Field of view;
@@ -61,31 +63,45 @@ export default {
       const near = 0.1;
       const far = 1000;
       vm.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-      vm.camera.position.set(-5, 5, 12);
+      vm.camera.position.set(-1.1, 1.1, 2.7);
       vm.camera.lookAt(new THREE.Vector3(0.0, 0.0, 0.0));
       vm.scene.add(vm.camera);
 
-      vm.renderer = window.WebGLRenderingContext ? new THREE.WebGLRenderer({ antialias: true, alpha: true }) : new THREE.CanvasRenderer();
+      vm.renderer = window.WebGLRenderingContext ? new THREE.WebGLRenderer({ antialias: true }) : new THREE.CanvasRenderer();
       vm.renderer.setSize(vm.canvasWidth, vm.canvasHeight);
       vm.renderer.setPixelRatio(window.devicePixelRatio);
       vm.container.appendChild(vm.renderer.domElement);
 
       // -- create orbit controls
       vm.orbitControls = new OrbitControls(vm.camera, vm.renderer.domElement);
+      // vm.orbitControls.autoRotate = true;
+      vm.orbitControls.enableDamping = true;
 
-      // -- create main light
-      vm.main_light.obj = new THREE.DirectionalLight('#ffffff', vm.main_light.intensity);
-      vm.main_light.obj.position.set(vm.main_light.pos.x, vm.main_light.pos.y, vm.main_light.pos.z);
-      vm.scene.add(vm.main_light.obj);
+      // -- create light
+      const light1 = new THREE.PointLight(0xffffff, 2);
+      light1.position.set(0.0, 3.0, 5.0);
+      const light1Helper = new THREE.PointLightHelper(light1, 0.5, 0xffffff);
 
-      // -- create second light
-      vm.second_light.obj = new THREE.DirectionalLight('#ffffff', vm.second_light.intensity);
-      vm.second_light.obj.position.set(vm.second_light.pos.x, vm.second_light.pos.y, vm.second_light.pos.z);
-      vm.scene.add(vm.second_light.obj);
+      const light2 = new THREE.PointLight(0xffffff, 2);
+      light2.position.set(0.0, 1.0, -5.0);
+      const light2Helper = new THREE.PointLightHelper(light2, 0.5, 0xffffff);
 
-      const light2 = new THREE.DirectionalLight('#ffffff', 0.35);
-      light2.position.set(-1.0, 0.0, -1.0);
+      const light3 = new THREE.PointLight(0xffffff, 2);
+      light3.position.set(5.0, 3.0, 0.0);
+      const light3Helper = new THREE.PointLightHelper(light3, 0.5, 0xffffff);
+
+      const light4 = new THREE.PointLight(0xffffff, 2);
+      light4.position.set(-5.0, 1.0, 0.0);
+      const light4Helper = new THREE.PointLightHelper(light4, 0.5, 0xffffff);
+
+      vm.scene.add(light1);
       vm.scene.add(light2);
+      vm.scene.add(light3);
+      vm.scene.add(light4);
+      vm.scene.add(light1Helper);
+      vm.scene.add(light2Helper);
+      vm.scene.add(light3Helper);
+      vm.scene.add(light4Helper);
 
       // -- create object
       vm.loader = new GLTFLoader();
@@ -94,7 +110,7 @@ export default {
     render: function() {
       const vm = this;
       requestAnimationFrame(vm.render);
-
+      vm.orbitControls.update();
       vm.onUpdateObject(vm);
 
       vm.renderer.render(vm.scene, vm.camera);
@@ -103,7 +119,7 @@ export default {
       const vm = this;
       vm.modelLoadingComplete = true;
       console.log('GLTF / data: ', gltf);
-      vm.model = gltf.scene;
+      vm.model = gltf.scene.children[0];
       vm.model.position.set(vm.model_pos.x, vm.model_pos.y, vm.model_pos.z);
       vm.scene.add(vm.model);
     },
