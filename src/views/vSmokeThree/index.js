@@ -76,7 +76,7 @@ export default {
       vm.camera.lookAt(new THREE.Vector3(0.0, 0.0, 0.0));
       vm.scene.add(vm.camera);
 
-      vm.renderer = window.WebGLRenderingContext ? new THREE.WebGLRenderer({ antialias: true }) : new THREE.CanvasRenderer();
+      vm.renderer = window.WebGLRenderingContext ? new THREE.WebGLRenderer({ antialias: true, alpha: true }) : new THREE.CanvasRenderer();
       vm.renderer.setSize(vm.canvasWidth, vm.canvasHeight);
       vm.renderer.setPixelRatio(window.devicePixelRatio);
       vm.container.appendChild(vm.renderer.domElement);
@@ -183,11 +183,9 @@ export default {
       const loader = new THREE.TextureLoader();
       loader.load('textures/smoke.png', function(texture) {
         const portalGeo = new THREE.PlaneBufferGeometry(250.0, 250.0);
-        const portalMaterial = new THREE.MeshStandardMaterial({
+        const portalMaterial = new THREE.MeshLambertMaterial({
           map: texture,
           transparent: true,
-          alphaTest: 0.1,
-          side: THREE.DoubleSide,
         });
 
         for (let i = 880; i > 150; i -= 1) {
