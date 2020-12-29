@@ -80,7 +80,7 @@ export default {
 
       // -- create orbit controls
       vm.orbitControls = new OrbitControls(vm.camera, vm.renderer.domElement);
-      // vm.orbitControls.autoRotate = true;
+      vm.orbitControls.autoRotate = true;
       vm.orbitControls.enableDamping = true;
 
       // -- create postprocessing
