@@ -100,7 +100,7 @@ export default {
       // --- create smoke particle
       vm.particleSetup();
     },
-    render: function() {
+    render: function(timeStep) {
       const vm = this;
 
       if (vm.startup === false) {
@@ -111,7 +111,8 @@ export default {
       vm.onUpdateParticle(vm);
 
       vm.renderer.render(vm.scene, vm.camera);
-      requestAnimationFrame(vm.render);
+      const reqAnimID = requestAnimationFrame(vm.render);
+      // console.warn(`timeStep: ${timeStep} / reqAnimID: ${reqAnimID}`);
     },
     onLoaderFinish: function(gltf) {
       const vm = this;
@@ -139,7 +140,6 @@ export default {
 
       // --- case 1
       const powerUnit = valueTrueFalse01(0.9);
-      console.log('power Unit: ', powerUnit);
       vm.point_light.power = (350.0 + Math.random() * 500.0) * powerUnit + 377.0 * (1.0 - powerUnit);
 
       // --- case 2
