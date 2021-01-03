@@ -21,5 +21,6 @@ module.exports = {
     'no-unused-vars': 1,
     'no-param-reassign': 0,
     'prefer-destructuring': 0,
+    'class-methods-use-this:': 'none',
   },
 };

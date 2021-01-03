@@ -1,0 +1,32 @@
+.mouse-follow-view {
+  width: calc(100vw - (100vw * 0.15));
+  height: 100vh;
+  background: #313131;
+}
+
+.mouse-follow-view .cursor {
+  display: block;
+}
+
+.mouse-follow-view .cursor__inner {
+  z-index: 9999;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  mix-blend-mode: difference;
+  border-radius: 50%;
+}
+
+.mouse-follow-view .cursor__inner--dot {
+  width: 8px;
+  height: 8px;
+  background: #fff;
+}
+
+.mouse-follow-view .cursor__inner--circle {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #fff;
+}
+/*# sourceMappingURL=style.css.map */

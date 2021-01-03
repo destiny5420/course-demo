@@ -24,6 +24,7 @@ export default {
         { name: 'Three-Wave', link: '/three-wave' },
         { name: 'PostprocessingEffect-Three', link: '/postprocessing-effect-three' },
         { name: 'ShaderSmile', link: '/shader-smile' },
+        { name: 'MouseFollow', link: '/mouse-follow' },
       ],
     };
   },

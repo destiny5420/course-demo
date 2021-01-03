@@ -69,6 +69,11 @@ const routes = [
     name: 'PostprocessingEffectThree',
     component: () => import('@/views/vPostprocessingEffectThree/index.vue'),
   },
+  {
+    path: '/mouse-follow',
+    name: 'MouseFollow',
+    component: () => import('@/views/vMouseFollow/index.vue'),
+  },
 ];
 
 const router = new VueRouter({
