@@ -6,7 +6,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "firebase:dev": "firebase deploy"
+    "firebase:dev": "firebase deploy",
+    "deploy": "aws s3 sync ./dist s3://paper-course.com --delete"
   },
   "dependencies": {
     "core-js": "^3.6.5",
