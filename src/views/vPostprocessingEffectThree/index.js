@@ -64,7 +64,7 @@ export default {
       vm.scene.background = new THREE.Color(0xdddddd);
 
       // -- create camera
-      const fov = 60; // Field of view;
+      const fov = 45; // Field of view;
       const aspect = vm.canvasWidth / vm.canvasHeight;
       const near = 0.1;
       const far = 1000;
@@ -72,6 +72,9 @@ export default {
       vm.camera.position.set(-2.217, 1.566, 0.55);
       vm.camera.lookAt(new THREE.Vector3(0.0, 0.0, 0.0));
       vm.scene.add(vm.camera);
+
+      const cameraHelper = new THREE.CameraHelper(vm.camera);
+      vm.scene.add(cameraHelper);
 
       vm.renderer = window.WebGLRenderingContext ? new THREE.WebGLRenderer({ antialias: true }) : new THREE.CanvasRenderer();
       vm.renderer.setSize(vm.canvasWidth, vm.canvasHeight);
