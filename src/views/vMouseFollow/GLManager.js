@@ -1,24 +1,27 @@
-import { Renderer } from 'pixi.js';
 import * as THREE from 'three';
+import shader from './shader';
 
 function GLManager(data) {
   this.totalEntries = data.length;
   this.loadedEntries = 0;
-  this.init();
+  this.init(data);
 }
 
-GLManager.prototype.init = function() {
+GLManager.prototype.init = function(data) {
   const camera = new THREE.PerspectiveCamera(45.0, 1.0, 0.1, 10000.0);
   camera.position.z = 5;
   camera.fov = 50;
   const scene = new THREE.Scene();
   camera.lookAt = scene.position;
   const renderer = new THREE.WebGLRenderer({
-    alpha: true,
+    alpha: false,
     antialias: true,
   });
   renderer.setSize(window.innerWidth - window.innerWidth * 0.15, window.innerHeight);
   renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.domElement.setAttribute('style', ' position: absolute; left: 15%;');
+  this.textures = [];
+  this.factors = data.map(() => new THREE.Vector2(1, 1));
   this.render = this.render.bind(this);
   this.currentIndex = 0;
   this.nextIndex = 0;
@@ -34,7 +37,7 @@ GLManager.prototype.init = function() {
 };
 
 GLManager.prototype.getViewSize = function() {
-  console.warn('this.camera.aspect: ', this.camera.aspect, ` / fov: ${this.camera.fov}`);
+  // console.warn('this.camera.aspect: ', this.camera.aspect, ` / fov: ${this.camera.fov}`);
   const fovInRadians = (this.camera.fov * Math.PI) / 180;
   const viewSize = Math.abs(this.camera.position.z * Math.tan(fovInRadians / 2) * 2);
 
@@ -86,15 +89,69 @@ GLManager.prototype.calculateAspectRatioFactor = function(index, texture) {
 };
 
 GLManager.prototype.createPlan = function() {
-  this.loop();
+  const { width, height } = this.getPlaneSize();
+  const SEGMENTS = 60;
+  const GEOMETRY = new THREE.PlaneBufferGeometry(width, height, SEGMENTS, SEGMENTS);
+
+  const MATERIAL = new THREE.ShaderMaterial({
+    uniforms: {
+      u_texture: {
+        type: 't',
+        value: this.textures[this.currentIndex],
+      },
+      u_textureFactor: {
+        type: 'f',
+        value: this.factors[this.currentIndex],
+      },
+      u_texture2: {
+        type: 't',
+        value: this.textures[this.nextIndex],
+      },
+      u_texture2Factor: {
+        type: 'f',
+        value: this.factors[this.nextIndex],
+      },
+      u_textureProgress: {
+        type: 'f',
+        value: this.textureProgress,
+      },
+      u_offset: {
+        type: 'f',
+        value: 8,
+      },
+      u_progress: {
+        type: 'f',
+        value: 0,
+      },
+      u_direction: {
+        type: 'f',
+        value: 1,
+      },
+    },
+    vertexShader: shader.VERTEX,
+    fragmentShader: shader.FRAGMENT,
+    side: THREE.DoubleSide,
+  });
+  const MESH = new THREE.Mesh(GEOMETRY, MATERIAL);
+  this.scene.add(MESH);
+  this.mesh = MESH;
+  // this.loop();
 };
-GLManager.prototype.mount = function() {};
+
+GLManager.prototype.mount = function(container) {
+  container.appendChild(this.renderer.domElement);
+};
+
+GLManager.prototype.updateStickEffect = function({ progress }) {
+  this.mesh.material.uniforms.u_progress.value = progress;
+};
+
 GLManager.prototype.render = function() {
   if (!this.initialRender) {
     this.initialRender = true;
   }
-
   this.renderer.render(this.scene, this.camera);
+  // this.renderer.render(this.scene, this.camera);
 };
 GLManager.prototype.loop = function() {};
 // eslint-disable-next-line import/prefer-default-export

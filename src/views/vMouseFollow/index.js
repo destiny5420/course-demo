@@ -1,3 +1,4 @@
+import * as dat from 'dat.gui';
 import { Cursor } from './Cursor';
 import { Showcase } from './Showcase';
 
@@ -9,7 +10,9 @@ export default {
     return {
       cursor: null,
       showcase: null,
+      datGUI: null,
       slidesData: [{ title: 'Segovia' }, { title: 'Barcelona' }, { title: 'Malaga' }, { title: 'Pamplona' }, { title: 'Bilbao' }],
+      progress: 0,
     };
   },
   methods: {},
@@ -21,6 +24,13 @@ export default {
   mounted: function() {
     const vm = this;
 
+    vm.datGUI = new dat.GUI();
+    vm.datGUI
+      .add(vm, 'progress')
+      .min(0)
+      .max(1)
+      .step(0.01);
+
     vm.cursor = new Cursor(
       document.querySelector(`.${vm.$style.cursor}`),
       document.querySelector(`.${vm.$style['cursor__inner--dot']}`),
@@ -28,9 +38,26 @@ export default {
     );
 
     vm.showcase = new Showcase(vm.slidesData);
+    vm.showcase.mount(document.getElementById('app'));
+    vm.showcase.render();
+  },
+  watch: {
+    progress: {
+      handler: function(cur) {
+        if (!this.showcase) {
+          return;
+        }
+
+        this.showcase.updateStickEffect(cur);
+      },
+      immediate: true,
+    },
   },
   beforeUpdate: function() {},
   updated: function() {},
-  beforeDestroy: function() {},
+  beforeDestroy: function() {
+    const vm = this;
+    vm.datGUI.destroy();
+  },
   Destroy: function() {},
 };
