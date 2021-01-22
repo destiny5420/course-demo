@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import shader from './shader';
 
 function GLManager(data) {
@@ -10,13 +11,14 @@ function GLManager(data) {
 GLManager.prototype.init = function(data) {
   const camera = new THREE.PerspectiveCamera(45.0, 1.0, 0.1, 10000.0);
   camera.position.z = 5;
-  camera.fov = 50;
+  camera.fov = 75.0;
   const scene = new THREE.Scene();
-  camera.lookAt = scene.position;
+  // camera.lookAt = scene.position;
   const renderer = new THREE.WebGLRenderer({
     alpha: false,
     antialias: true,
   });
+
   renderer.setSize(window.innerWidth - window.innerWidth * 0.15, window.innerHeight);
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.domElement.setAttribute('style', ' position: absolute; left: 15%;');
@@ -34,6 +36,14 @@ GLManager.prototype.init = function(data) {
   this.loopRaf = null;
   this.loop = this.loop.bind(this);
   this.getPlaneSize();
+
+  // other
+  const orbitControls = new OrbitControls(camera, renderer.domElement);
+
+  const size = 10;
+  const divisions = 10;
+  const gridHelper = new THREE.GridHelper(size, divisions);
+  this.scene.add(gridHelper);
 };
 
 GLManager.prototype.getViewSize = function() {
@@ -47,8 +57,8 @@ GLManager.prototype.getViewSize = function() {
 GLManager.prototype.getPlaneSize = function() {
   const viewSize = this.getViewSize();
   return {
-    width: viewSize * 1.5,
-    height: viewSize,
+    width: viewSize * 0.5,
+    height: viewSize * 0.5,
   };
 };
 
@@ -95,55 +105,60 @@ GLManager.prototype.createPlan = function() {
 
   const MATERIAL = new THREE.ShaderMaterial({
     uniforms: {
-      u_texture: {
-        type: 't',
-        value: this.textures[this.currentIndex],
-      },
-      u_textureFactor: {
-        type: 'f',
-        value: this.factors[this.currentIndex],
-      },
-      u_texture2: {
-        type: 't',
-        value: this.textures[this.nextIndex],
-      },
-      u_texture2Factor: {
-        type: 'f',
-        value: this.factors[this.nextIndex],
-      },
-      u_textureProgress: {
-        type: 'f',
-        value: this.textureProgress,
-      },
-      u_offset: {
-        type: 'f',
-        value: 8,
-      },
-      u_progress: {
-        type: 'f',
-        value: 0,
-      },
       u_direction: {
         type: 'f',
-        value: 1,
+        value: 0.0,
+      },
+      u_time: {
+        type: 'f',
+        value: 0.0,
+      },
+      u_v2Resolution: {
+        type: 'v',
+        value: new THREE.Vector2(window.innerWidth, window.innerHeight),
+      },
+      u_tmp: {
+        type: 'f',
+        value: 0.0,
       },
     },
     vertexShader: shader.VERTEX,
     fragmentShader: shader.FRAGMENT,
     side: THREE.DoubleSide,
   });
-  const MESH = new THREE.Mesh(GEOMETRY, MATERIAL);
-  this.scene.add(MESH);
-  this.mesh = MESH;
-  // this.loop();
+  const mesh = new THREE.Mesh(GEOMETRY, MATERIAL);
+  this.scene.add(mesh);
+  this.mesh = mesh;
 };
 
 GLManager.prototype.mount = function(container) {
   container.appendChild(this.renderer.domElement);
 };
 
-GLManager.prototype.updateStickEffect = function({ progress }) {
-  this.mesh.material.uniforms.u_progress.value = progress;
+GLManager.prototype.updateStickEffect = function({ direction }) {
+  this.mesh.material.uniforms.u_direction.value = direction;
+};
+
+GLManager.prototype.updateTmp = function(value) {
+  this.mesh.material.uniforms.u_tmp.value = value;
+};
+
+GLManager.prototype.scheduleLoop = function() {
+  if (!this.loopRaf) {
+    this.loop();
+  }
+};
+
+GLManager.prototype.cancelLoop = function() {
+  cancelAnimationFrame(this.loopRaf);
+  this.loopRaf = null;
+};
+
+GLManager.prototype.loop = function() {
+  this.render();
+  this.time += 1;
+  this.mesh.material.uniforms.u_time.value = this.time;
+  this.loopRaf = requestAnimationFrame(this.loop);
 };
 
 GLManager.prototype.render = function() {
@@ -151,8 +166,7 @@ GLManager.prototype.render = function() {
     this.initialRender = true;
   }
   this.renderer.render(this.scene, this.camera);
-  // this.renderer.render(this.scene, this.camera);
 };
-GLManager.prototype.loop = function() {};
+
 // eslint-disable-next-line import/prefer-default-export
 export { GLManager };

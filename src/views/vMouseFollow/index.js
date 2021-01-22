@@ -13,6 +13,7 @@ export default {
       datGUI: null,
       slidesData: [{ title: 'Segovia' }, { title: 'Barcelona' }, { title: 'Malaga' }, { title: 'Pamplona' }, { title: 'Bilbao' }],
       progress: 0,
+      tmp: 0,
     };
   },
   methods: {},
@@ -30,6 +31,12 @@ export default {
       .min(0)
       .max(1)
       .step(0.01);
+
+    vm.datGUI
+      .add(vm, 'tmp')
+      .min(0)
+      .max(1)
+      .step(0.05);
 
     vm.cursor = new Cursor(
       document.querySelector(`.${vm.$style.cursor}`),
@@ -49,6 +56,16 @@ export default {
         }
 
         this.showcase.updateStickEffect(cur);
+      },
+      immediate: true,
+    },
+    tmp: {
+      handler: function(cur) {
+        if (!this.showcase) {
+          return;
+        }
+
+        this.showcase.updateTmp(cur);
       },
       immediate: true,
     },
