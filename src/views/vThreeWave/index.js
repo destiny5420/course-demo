@@ -24,8 +24,8 @@ export default {
       configure: {
         startupPos: {
           x: 25,
-          y: 25,
-          z: 25,
+          y: 15,
+          z: 35,
         },
         fov: 75.0,
         amountX: 50,
@@ -34,7 +34,7 @@ export default {
         scales: [],
         SEPARATION: 10,
         positionOffset: 10,
-        scaleOffset: 2,
+        scaleOffset: 3.5,
       },
       particles: [],
       particleCount: 0,
@@ -50,7 +50,7 @@ export default {
       vm.three.stats = new Stats();
       vm.three.container.appendChild(vm.three.stats.dom);
 
-      vm.createDatGUI();
+      // vm.createDatGUI();
       vm.createScene();
       vm.createObj();
       vm.createLight();
@@ -83,14 +83,16 @@ export default {
       vm.three.camera = new THREE.PerspectiveCamera(75, (window.innerWidth - window.innerWidth * 0.15) / window.innerHeight, 0.1, 1000);
       vm.three.camera.position.set(vm.configure.startupPos.x, vm.configure.startupPos.y, vm.configure.startupPos.z);
 
-      vm.three.renderer = window.WebGLRenderingContext ? new THREE.WebGLRenderer({ antialias: true }) : new THREE.CanvasRenderer();
+      vm.three.renderer = window.WebGLRenderingContext ? new THREE.WebGLRenderer({ antialias: true, alpha: true }) : new THREE.CanvasRenderer();
       vm.three.renderer.setSize(window.innerWidth - window.innerWidth * 0.15, window.innerHeight);
-      vm.three.renderer.setClearColor(0x07074e, 1); // setting background color;
+      vm.three.renderer.setClearColor('#2e2e2e', 1); // setting background color;
 
       vm.three.container.appendChild(vm.three.renderer.domElement);
 
       // -- OrbitControls
       vm.three.orbitControls = new OrbitControls(vm.three.camera, vm.three.renderer.domElement);
+      vm.three.orbitControls.autoRotate = true;
+      vm.three.orbitControls.enableDamping = true;
 
       const numParticles = vm.configure.amountX * vm.configure.amountY;
       vm.configure.positions = new Float32Array(numParticles * 3);
@@ -140,12 +142,12 @@ export default {
       console.log('-- createObj Function --');
       const vm = this;
 
-      const geometry = new THREE.BoxGeometry();
-      const material = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true });
-      vm.objs.cube = new THREE.Mesh(geometry, material);
-      vm.three.scene.add(vm.objs.cube);
+      // const geometry = new THREE.BoxGeometry();
+      // const material = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true });
+      // vm.objs.cube = new THREE.Mesh(geometry, material);
+      // vm.three.scene.add(vm.objs.cube);
 
-      vm.three.camera.position.z = 5;
+      // vm.three.camera.position.z = 5;
     },
     createLight: function() {
       const vm = this;
@@ -155,10 +157,10 @@ export default {
     createHelper: function() {
       const vm = this;
 
-      const size = 10;
-      const divisions = 10;
-      const gridHelper = new THREE.GridHelper(size, divisions);
-      vm.three.scene.add(gridHelper);
+      // const size = 10;
+      // const divisions = 10;
+      // const gridHelper = new THREE.GridHelper(size, divisions);
+      // vm.three.scene.add(gridHelper);
     },
     animate: function() {
       const vm = this;
@@ -173,7 +175,7 @@ export default {
       // if (vm.particleCount % 3 === 0) {
       //   vm.
       // }
-
+      vm.three.orbitControls.update();
       vm.three.renderer.render(vm.three.scene, vm.three.camera);
     },
     updateParticle: function() {

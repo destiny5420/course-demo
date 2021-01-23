@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Dosis:wght@600&family=Roboto+Condensed:wght@300&display=swap');
+.container {
+  position: relative;
+  height: 100%;
+}
+
+.slogan {
+  width: 100%;
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-transform: uppercase;
+  font-size: 60px;
+  color: #fff;
+  font-family: 'Dosis', sans-serif;
+
+  line-height: 1;
+
+  &__line {
+    &:not(:first-child) {
+      margin-bottom: 10px;
+    }
+  }
+}
+
+.sub-slogan {
+  margin-top: 20px;
+  font-size: 25px;
+  font-family: 'Roboto Condensed', sans-serif;
+}
+
+.nav-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  height: 10%;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  z-index: 2;
+}
+
+.logo {
+  display: inline-block;
+  position: relative;
+  color: #fff;
+  font-size: 3rem;
+  font-family: 'Pragati Narrow', sans-serif;
+}
+
+#canvas-render {
+  position: absolute;
+  z-index: 0;
+  left: 0px;
+  top: 0px;
+  opacity: 1;
+}
