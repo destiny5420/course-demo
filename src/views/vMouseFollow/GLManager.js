@@ -119,7 +119,7 @@ GLManager.prototype.createPlan = function() {
       },
       u_tmp: {
         type: 'f',
-        value: 0.0,
+        value: 0.1,
       },
     },
     vertexShader: shader.VERTEX,

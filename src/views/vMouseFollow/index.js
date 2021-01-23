@@ -13,7 +13,7 @@ export default {
       datGUI: null,
       slidesData: [{ title: 'Segovia' }, { title: 'Barcelona' }, { title: 'Malaga' }, { title: 'Pamplona' }, { title: 'Bilbao' }],
       progress: 0,
-      tmp: 0,
+      tmp: 0.1,
     };
   },
   methods: {},
@@ -45,7 +45,7 @@ export default {
     );
 
     vm.showcase = new Showcase(vm.slidesData);
-    vm.showcase.mount(document.getElementById('app'));
+    vm.showcase.mount(vm.$refs.mainView);
     vm.showcase.render();
   },
   watch: {
