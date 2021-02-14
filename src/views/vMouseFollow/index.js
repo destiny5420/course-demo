@@ -24,7 +24,7 @@ export default {
   beforeMounted: function() {},
   mounted: function() {
     const vm = this;
-
+    console.log('Testing 測試使用');
     vm.datGUI = new dat.GUI();
     vm.datGUI
       .add(vm, 'progress')
